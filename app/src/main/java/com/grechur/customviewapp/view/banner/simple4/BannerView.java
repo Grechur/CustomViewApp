@@ -56,6 +56,13 @@ public class BannerView extends RelativeLayout{
     //当前的位置
     private int mCurrentPosition = 0;
 
+    private BannerClickListener mListener;
+
+    public void setBannerListener(BannerClickListener listener){
+        this.mListener = listener;
+
+    }
+
     public BannerView(Context context) {
         this(context,null);
     }
@@ -115,6 +122,13 @@ public class BannerView extends RelativeLayout{
         mBvp = findViewById(R.id.bvp_custom4);
         tv_banner_desc = findViewById(R.id.tv_banner_desc);
         ll_dot_container = findViewById(R.id.ll_dot_container);
+        mBvp.setBannerListener(new BannerClickListener() {
+            @Override
+            public void onBannerListener(View view, int position) {
+                if (mListener==null) return;
+                mListener.onBannerListener(view, position);
+            }
+        });
     }
 
     /**
@@ -225,4 +239,6 @@ public class BannerView extends RelativeLayout{
         }
         return RelativeLayout.ALIGN_PARENT_RIGHT;
     }
+
+
 }

@@ -18,12 +18,12 @@
         <!--android:layout_height="140dp">-->
 
     <!--</com.grechur.customviewapp.view.banner.simple2.BannerViewPager>-->
-    <!--<com.grechur.customviewapp.view.banner.simple3.BannerViewPager-->
-        <!--android:id="@+id/bvp_custom3"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="140dp">-->
+    <com.grechur.customviewapp.view.banner.simple3.BannerViewPager
+        android:id="@+id/bvp_custom3"
+        android:layout_width="match_parent"
+        android:layout_height="140dp">
 
-    <!--</com.grechur.customviewapp.view.banner.simple3.BannerViewPager>-->
+    </com.grechur.customviewapp.view.banner.simple3.BannerViewPager>
     <com.grechur.customviewapp.view.banner.simple4.BannerView
         android:id="@+id/bv_view"
         android:layout_width="match_parent"

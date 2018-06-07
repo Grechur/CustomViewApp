@@ -21,7 +21,7 @@ public abstract class BannerAdapter<T> {
         mData = Arrays.asList(data);
     }
 
-    public abstract View getView(int position);
+    public abstract View getView(int position,View convertView);
 
     public int getCount(){
         return mData!=null?mData.size():0;
@@ -33,5 +33,9 @@ public abstract class BannerAdapter<T> {
      */
     public String setBannerDesc(int position) {
         return "";
+    }
+
+    public T getUrl(int position){
+        return mData.get(position);
     }
 }
