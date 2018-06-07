@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.grechur.customviewapp.BannerActivity">
+    <com.grechur.customviewapp.view.banner.simple1.BannerViewPager
+        android:id="@+id/bvp_custom"
+        android:layout_width="match_parent"
+        android:layout_height="140dp">
+
+    </com.grechur.customviewapp.view.banner.simple1.BannerViewPager>
+    <!--<com.grechur.customviewapp.view.banner.simple2.BannerViewPager-->
+        <!--android:id="@+id/bvp_custom2"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="140dp">-->
+
+    <!--</com.grechur.customviewapp.view.banner.simple2.BannerViewPager>-->
+    <!--<com.grechur.customviewapp.view.banner.simple3.BannerViewPager-->
+        <!--android:id="@+id/bvp_custom3"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="140dp">-->
+
+    <!--</com.grechur.customviewapp.view.banner.simple3.BannerViewPager>-->
+    <com.grechur.customviewapp.view.banner.simple4.BannerView
+        android:id="@+id/bv_view"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:dotIndicatorNormal="@drawable/indicator_normal_new_shape"
+        app:dotIndicatorSelect="@drawable/indicator_select_new_shape"
+        app:dotLocation="center"
+        app:dotSize="10dp"
+        app:dotDistance ="5dp"
+        app:bottomBackground="@color/trans_bg"
+        />
+</LinearLayout>
