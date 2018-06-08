@@ -12,5 +12,12 @@
         <attr name="dotDistance" format="dimension"/>
         <attr name="bottomBackground" format="color"/>
         <attr name="aspectRatio" format="float"/>
+        <attr name="isLooper" format="boolean"/>
+        <attr name="hasIndication" format="boolean"/>
+        <attr name="open_mz_mode" format="boolean"/>
+    </declare-styleable>
+
+    <declare-styleable name="TrackTextIndicator">
+        <attr name="visibleIndicatorNum" format="integer"/>
     </declare-styleable>
 </resources>

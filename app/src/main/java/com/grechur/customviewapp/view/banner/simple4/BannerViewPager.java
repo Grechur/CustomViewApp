@@ -11,6 +11,7 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -49,6 +50,8 @@ public class BannerViewPager extends ViewPager{
     private Activity mActivity;
     //添加监听
     private BannerClickListener mListener;
+    //是否需要轮播
+    private boolean isLooper;
 
     public void setBannerListener(BannerClickListener listener){
         this.mListener = listener;
@@ -166,22 +169,30 @@ public class BannerViewPager extends ViewPager{
         return null;
     }
 
+    public void setIsLooper(boolean isLooper){
+        this.isLooper = isLooper;
+    }
+
     /**
      * 开启轮播
      */
     public void startRoll(){
-        //为了防止多次调用该方法，一次转动多张图，先清除再发送
-        mHandler.removeMessages(MSG_WHAT);
-        //发送消息播放下一页
-        mHandler.sendEmptyMessageDelayed(MSG_WHAT,mDelayTime);
+        if(isLooper){
+            //为了防止多次调用该方法，一次转动多张图，先清除再发送
+            mHandler.removeMessages(MSG_WHAT);
+            //发送消息播放下一页
+            mHandler.sendEmptyMessageDelayed(MSG_WHAT,mDelayTime);
+        }
 //        Log.e("TAG","startRoll");
     }
 
     /**
      * 停止轮播
      */
-    private void stopRoll() {
-        mHandler.removeMessages(MSG_WHAT);
+    public void stopRoll() {
+        if(isLooper){
+            mHandler.removeMessages(MSG_WHAT);
+        }
     }
 
     /**

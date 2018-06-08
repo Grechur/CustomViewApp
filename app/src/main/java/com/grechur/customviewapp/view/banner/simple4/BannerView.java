@@ -1,25 +1,22 @@
 package com.grechur.customviewapp.view.banner.simple4;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
-import android.support.annotation.RequiresApi;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
-import android.util.Log;
+import android.util.DisplayMetrics;
 import android.util.TypedValue;
-import android.view.Gravity;
-import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.grechur.customviewapp.R;
-
-import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
+import com.grechur.customviewapp.view.banner.simple4.transformer.CoverModeTransformer;
 
 /**
  * Created by zz on 2018/6/7.
@@ -28,6 +25,8 @@ import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 public class BannerView extends RelativeLayout{
     //banner
     private BannerViewPager mBvp;
+    //指示器父页面
+    private RelativeLayout rl_dashboard;
     //广告介绍
     private TextView tv_banner_desc;
     //指示器
@@ -42,13 +41,16 @@ public class BannerView extends RelativeLayout{
     //选中指示点的图片
     private Drawable mSelectDrawable;
 
-
+    //  自定义属性
     private int mDotIndicatorNormal;
     private int mDotIndicatorSelect;
     private int mDotLocation=-1;
     private int mDotSize= 12;
     private int mDotDistance = 10;
     private int mBottomBg = Color.parseColor("#5500d4e6");
+    private boolean isLooper = false;
+    private boolean hasIndication = true;
+    private boolean mIsOpenMZEffect = true;
 
     //宽高比
     private float mAspectRatio = (float)8/3;
@@ -74,8 +76,14 @@ public class BannerView extends RelativeLayout{
     public BannerView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         this.mContext = context;
-        inflate(context,R.layout.banner_view_layout,this);
         initAttrs(attrs);
+        if(mIsOpenMZEffect){
+            inflate(context,R.layout.banner_view_mz_layout,this);
+        }else{
+            inflate(context,R.layout.banner_view_normal_layout,this);
+        }
+
+
         initView();
 
     }
@@ -93,6 +101,9 @@ public class BannerView extends RelativeLayout{
         mDotSize = array.getDimensionPixelOffset(R.styleable.BannerView_dotSize,dip2px(mDotSize));
         mBottomBg = array.getColor(R.styleable.BannerView_bottomBackground,mBottomBg);
         mAspectRatio = array.getFloat(R.styleable.BannerView_aspectRatio,mAspectRatio);
+        isLooper = array.getBoolean(R.styleable.BannerView_isLooper,isLooper);
+        hasIndication = array.getBoolean(R.styleable.BannerView_hasIndication,hasIndication);
+        mIsOpenMZEffect = array.getBoolean(R.styleable.BannerView_open_mz_mode,mIsOpenMZEffect);
 
         mNormalDrawable = getResources().getDrawable(mDotIndicatorNormal);
         mSelectDrawable = getResources().getDrawable(mDotIndicatorSelect);
@@ -120,6 +131,7 @@ public class BannerView extends RelativeLayout{
      */
     private void initView() {
         mBvp = findViewById(R.id.bvp_custom4);
+        rl_dashboard = findViewById(R.id.rl_dashboard);
         tv_banner_desc = findViewById(R.id.tv_banner_desc);
         ll_dot_container = findViewById(R.id.ll_dot_container);
         mBvp.setBannerListener(new BannerClickListener() {
@@ -129,6 +141,27 @@ public class BannerView extends RelativeLayout{
                 mListener.onBannerListener(view, position);
             }
         });
+        mBvp.setIsLooper(isLooper);
+        if(hasIndication) rl_dashboard.setVisibility(VISIBLE);
+        else rl_dashboard.setVisibility(GONE);
+    }
+
+    /**
+     * 是否开启魅族模式
+     */
+    private void setOpenMZEffect(){
+        // 魅族模式
+        if(mIsOpenMZEffect) {
+
+            // 中间页面覆盖两边，和魅族APP 的banner 效果一样。
+            mBvp.setPageTransformer(true, new CoverModeTransformer(mBvp));
+        }
+//        else{
+//            // 中间页面不覆盖，页面并排，只是Y轴缩小
+//            mBvp.setPageTransformer(false,new ScaleYTransformer());
+//        }
+
+
     }
 
     /**
@@ -138,6 +171,11 @@ public class BannerView extends RelativeLayout{
     public void setAdapter(BannerAdapter adapter){
         mAdapter = adapter;
         mBvp.setAdapter(adapter);
+
+        if(mAdapter.getCount()<3){
+            mIsOpenMZEffect = false;
+        }
+        setOpenMZEffect();
         //要得到adapter才能去计算有多少个指示点
         initIndicator();
 
@@ -185,14 +223,49 @@ public class BannerView extends RelativeLayout{
             }
             //添加到布局中
             ll_dot_container.addView(indicatorView);
-            setBackgroundColor(mBottomBg);
+            rl_dashboard.setBackgroundColor(mBottomBg);
 
         }
 
 
     }
 
-
+    /**
+     * 添加拦截时间，按下时停止切换，抬起时开始切换
+     * @param ev
+     * @return
+     */
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        if(!isLooper){
+            return super.dispatchTouchEvent(ev);
+        }
+        switch (ev.getAction()){
+            // 按住Banner的时候，停止自动轮播
+            case MotionEvent.ACTION_MOVE:
+            case MotionEvent.ACTION_CANCEL:
+            case MotionEvent.ACTION_OUTSIDE:
+            case MotionEvent.ACTION_DOWN:
+                int paddingLeft = mBvp.getLeft();
+                float touchX = ev.getRawX();
+                // 如果是魅族模式，去除两边的区域
+                if(touchX >= paddingLeft && touchX < getScreenWidth(getContext()) - paddingLeft){
+                    mBvp.stopRoll();
+                }
+                break;
+            case MotionEvent.ACTION_UP:
+                //抬起重新开始切换
+                mBvp.startRoll();
+                break;
+        }
+        return super.dispatchTouchEvent(ev);
+    }
+    public static int getScreenWidth(Context context){
+        Resources resources = context.getResources();
+        DisplayMetrics dm = resources.getDisplayMetrics();
+        int width = dm.widthPixels;
+        return width;
+    }
 
     /**
      * 页面切换的回调

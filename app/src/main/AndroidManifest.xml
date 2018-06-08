@@ -18,7 +18,8 @@
         </activity>
         <activity android:name=".LoadingActivity" />
         <activity android:name=".LoveActivity" />
-        <activity android:name=".BannerActivity"></activity>
+        <activity android:name=".BannerActivity" />
+        <activity android:name=".IndicatorActivity"></activity>
     </application>
 
 </manifest>

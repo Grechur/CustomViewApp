@@ -24,5 +24,9 @@
         android:layout_height="wrap_content"
         android:text="跳转自定义banner"/>
 
-
+    <Button
+        android:id="@+id/btn_track"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="跳转文字变色"/>
 </LinearLayout>
