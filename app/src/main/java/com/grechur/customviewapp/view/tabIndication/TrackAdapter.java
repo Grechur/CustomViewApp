@@ -36,4 +36,9 @@ public abstract class TrackAdapter<T> {
     public void highlightIndicator(View view){
 
     }
+
+    //添加底部的指示器
+    public View getBottomTrackView(){
+        return null;
+    }
 }

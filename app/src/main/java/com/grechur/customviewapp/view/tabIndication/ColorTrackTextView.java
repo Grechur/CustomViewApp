@@ -12,8 +12,8 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.widget.TextView;
 
-import static com.grechur.customviewapp.view.tabIndication.ColorTrackTextView.Direction.DIRECTION_LEFT;
-import static com.grechur.customviewapp.view.tabIndication.ColorTrackTextView.Direction.DIRECTION_RIGHT;
+import static com.grechur.customviewapp.view.tabIndication.ColorTrackTextView.Direction.LEFT_TO_RIGHT;
+import static com.grechur.customviewapp.view.tabIndication.ColorTrackTextView.Direction.RIGHT_TO_LEFT;
 
 /**
  * Created by zz on 2018/6/8.
@@ -22,7 +22,7 @@ import static com.grechur.customviewapp.view.tabIndication.ColorTrackTextView.Di
 @SuppressLint("AppCompatCustomView")
 public class ColorTrackTextView extends TextView {
     // 默认的字体颜色的画笔
-    private Paint mOriginPaint;
+    private Paint mDefaultPaint;
     // 改变的字体颜色的画笔
     private Paint mChangePaint;
     // 当前的进度
@@ -33,10 +33,15 @@ public class ColorTrackTextView extends TextView {
     private String mText;
 
     // 当前朝向
-    private Direction mDirection = DIRECTION_LEFT;
+    private Direction mDirection = LEFT_TO_RIGHT;
+//    //是否时点击
+//    private boolean isClick = false;
+    //点击时文字的颜色类型
+    private int mType;
+
     // 绘制的朝向枚举
     public enum Direction {
-        DIRECTION_LEFT, DIRECTION_RIGHT
+        LEFT_TO_RIGHT, RIGHT_TO_LEFT
     }
 
 
@@ -59,7 +64,7 @@ public class ColorTrackTextView extends TextView {
         // 获取文字的范围
         Rect bounds = new Rect();
         mText = getText().toString();
-        mOriginPaint.getTextBounds(mText, 0, mText.length(), bounds);
+        mDefaultPaint.getTextBounds(mText, 0, mText.length(), bounds);
         if(getMeasuredWidth()<bounds.width()){
             setMeasuredDimension(bounds.width(),getMeasuredHeight());
         }
@@ -69,7 +74,7 @@ public class ColorTrackTextView extends TextView {
      * 初始化画笔
      */
     private void initPaint() {
-        mOriginPaint = getPaintByColor(Color.BLACK);
+        mDefaultPaint = getPaintByColor(Color.BLACK);
         mChangePaint = getPaintByColor(Color.RED);
     }
 
@@ -93,29 +98,46 @@ public class ColorTrackTextView extends TextView {
     @Override
     protected void onDraw(Canvas canvas) {
         // 字体的大小设置为TextView的文字大小
-        Log.e("TAG","getTextSize:"+getTextSize());
+//        Log.e("TAG","getTextSize:"+getTextSize());
+
         mChangePaint.setTextSize(getTextSize());
-        mOriginPaint.setTextSize(getTextSize());
+        mDefaultPaint.setTextSize(getTextSize());
         // 获取当前文本
         mText = getText().toString();
         // 获取控件宽度
         int width = getWidth();
-        if (!TextUtils.isEmpty(mText)) {
-            // 根据当前进度计算中间位置
-            int middle = (int) (width * mCurrentProgress);
+//        if(isClick){
+////            isClick = false;
+//            if(mType == 0)drawText(canvas, mDefaultPaint, 0, width);
+//            else drawText(canvas, mChangePaint, 0, width);
+//        }else {
+            if (!TextUtils.isEmpty(mText)) {
+                // 根据当前进度计算中间位置
+                int middle = (int) (width * mCurrentProgress);
 
-            // 根据不同的朝向去画字体
-            if (mDirection == DIRECTION_LEFT) {
-                drawOriginDirectionLeft(canvas, middle);
-                drawChangeDirectionLeft(canvas, middle);
+                // 根据不同的朝向去画字体
+                if (mDirection == LEFT_TO_RIGHT) {
+                    drawDefaultDirectionLeft(canvas, middle);
+                    drawChangeDirectionLeft(canvas, middle);
+                }
+                if (mDirection == RIGHT_TO_LEFT) {
+                    drawDefaultDirectionRight(canvas, middle);
+                    drawChangeDirectionRight(canvas, middle);
+                }
             }
-            if (mDirection == DIRECTION_RIGHT) {
-                drawOriginDirectionRight(canvas, middle);
-                drawChangeDirectionRight(canvas, middle);
-            }
-        }
-
+//        }
     }
+
+//    public void setTextColor(int color,int type){
+//        isClick = true;
+//        mType = type;
+//        if(type == 0){
+//            mDefaultPaint.setColor(color);
+//        }else{
+//            mChangePaint.setColor(color);
+//        }
+//        invalidate();
+//    }
 
     /**
      * 画朝向右边变色字体
@@ -128,8 +150,8 @@ public class ColorTrackTextView extends TextView {
     /**
      * 画朝向左边默认色字体
      */
-    private void drawOriginDirectionRight(Canvas canvas, int middle) {
-        drawText(canvas, mOriginPaint, 0, getWidth() - middle);
+    private void drawDefaultDirectionRight(Canvas canvas, int middle) {
+        drawText(canvas, mDefaultPaint, 0, getWidth() - middle);
     }
 
     /**
@@ -142,8 +164,8 @@ public class ColorTrackTextView extends TextView {
     /**
      * 画朝向左边默认色字体
      */
-    private void drawOriginDirectionLeft(Canvas canvas, int middle) {
-        drawText(canvas, mOriginPaint, middle, getWidth());
+    private void drawDefaultDirectionLeft(Canvas canvas, int middle) {
+        drawText(canvas, mDefaultPaint, middle, getWidth());
     }
 
 
@@ -162,10 +184,10 @@ public class ColorTrackTextView extends TextView {
         canvas.clipRect(startX, 0, endX, getHeight());
         // 获取文字的范围
         Rect bounds = new Rect();
-        mOriginPaint.getTextBounds(mText, 0, mText.length(), bounds);
+        mDefaultPaint.getTextBounds(mText, 0, mText.length(), bounds);
 
         // 获取文字的Metrics 用来计算基线
-        Paint.FontMetricsInt fontMetrics = mOriginPaint.getFontMetricsInt();
+        Paint.FontMetricsInt fontMetrics = mDefaultPaint.getFontMetricsInt();
         // 获取文字的宽高
         int fontTotalHeight = fontMetrics.bottom - fontMetrics.top;
         // 计算基线到中心点的位置
@@ -185,6 +207,8 @@ public class ColorTrackTextView extends TextView {
      * @param currentProgress 当前进度
      */
     public void setCurrentProgress(float currentProgress) {
+        //滑动的话，说明不是点击
+//        isClick = false;
         this.mCurrentProgress = currentProgress;
         // 重新绘制
         invalidate();
