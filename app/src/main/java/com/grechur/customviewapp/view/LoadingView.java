@@ -13,6 +13,7 @@ import android.os.Build;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.AnticipateInterpolator;
 import android.view.animation.LinearInterpolator;
@@ -123,12 +124,13 @@ public class LoadingView extends View{
             if(mRotationAnimator == null){
                 mRotationAnimator = ObjectAnimator.ofFloat(0,(float)Math.PI*2);
 
-                mRotationAnimator.setDuration(ROTATE_DURATION);
+                mRotationAnimator.setDuration(ROTATE_DURATION+200);
                 mRotationAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                     @Override
                     public void onAnimationUpdate(ValueAnimator animation) {
                         // 不断获取值 当前大圆旋转的角度
                         mCurrentRotationAngle = (float) animation.getAnimatedValue();
+                        Log.e("TAG",animation.getCurrentPlayTime()+" "+(animation.getCurrentPlayTime() > ROTATE_DURATION));
                         if(animation.getCurrentPlayTime() > ROTATE_DURATION){
                             disappear();
                         }

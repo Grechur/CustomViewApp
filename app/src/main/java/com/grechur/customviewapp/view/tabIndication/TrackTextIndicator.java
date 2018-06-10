@@ -22,7 +22,7 @@ import java.util.List;
  * Created by zz on 2018/6/8.
  */
 
-public class TrackTextIndicator extends HorizontalScrollView{
+public class TrackTextIndicator extends HorizontalScrollView implements ViewPager.OnPageChangeListener{
 
     private TrackAdapter mAdapter;
     //指示器条目集合布局
@@ -122,59 +122,61 @@ public class TrackTextIndicator extends HorizontalScrollView{
             throw new NullPointerException("viewPager不能为空");
         }
 
-        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener(){
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                if(mIsExecuteScroll){
-                    //字体颜色和viewpager同步
-                    ColorTrackTextView leftTrack = (ColorTrackTextView) mIndicators.get(position);
-                    leftTrack.setDirection(ColorTrackTextView.Direction.RIGHT_TO_LEFT);
-                    leftTrack.setCurrentProgress(1-positionOffset);
-
-                    try {
-                        ColorTrackTextView rightTrack = (ColorTrackTextView) mIndicators.get(position+1);
-                        rightTrack.setDirection(ColorTrackTextView.Direction.LEFT_TO_RIGHT);
-                        rightTrack.setCurrentProgress(positionOffset);
-                    } catch (Exception e){
-
-                    }
-                    scrollCurrentIndicator(position,positionOffset);
-                    mIndicatorGroup.scrollBottomTrack(position,positionOffset);
-                }
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-//                //将上一个位置重置
-//                mAdapter.restoreIndicator(mIndicatorGroup.getItemAt(mCurrentPosition));
-                //设置当前位置
-                mCurrentPosition = position;
-
-
-                int count = mAdapter.getCount();
-                for (int i = 0; i < count; i++) {
-                    if(position == i){
-                        //设置当前位置点亮
-                        mAdapter.highlightIndicator(mIndicatorGroup.getItemAt(mCurrentPosition));
-                    }else{
-                        mAdapter.restoreIndicator(mIndicatorGroup.getItemAt(i));
-                    }
-                }
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-                Log.e("TAG","state-->"+state);
-                if(state == 1){
-                    mIsExecuteScroll = true;
-                }
-                if(state == 0){
-                    mIsExecuteScroll = false;
-                }
-            }
-        });
+        mViewPager.addOnPageChangeListener(this);
         setAdapter(adapter);
     }
+
+    @Override
+    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+        if(mIsExecuteScroll){
+            //字体颜色和viewpager同步
+            ColorTrackTextView leftTrack = (ColorTrackTextView) mIndicators.get(position);
+            leftTrack.setDirection(ColorTrackTextView.Direction.RIGHT_TO_LEFT);
+            leftTrack.setCurrentProgress(1-positionOffset);
+
+            try {
+                ColorTrackTextView rightTrack = (ColorTrackTextView) mIndicators.get(position+1);
+                rightTrack.setDirection(ColorTrackTextView.Direction.LEFT_TO_RIGHT);
+                rightTrack.setCurrentProgress(positionOffset);
+            } catch (Exception e){
+
+            }
+            scrollCurrentIndicator(position,positionOffset);
+            mIndicatorGroup.scrollBottomTrack(position,positionOffset);
+        }
+    }
+
+    @Override
+    public void onPageSelected(int position) {
+        //将上一个位置重置
+        mAdapter.restoreIndicator(mIndicatorGroup.getItemAt(mCurrentPosition));
+        //设置当前位置
+        mCurrentPosition = position;
+        //设置当前位置点亮
+        mAdapter.highlightIndicator(mIndicatorGroup.getItemAt(mCurrentPosition));
+
+//        int count = mAdapter.getCount();
+//        for (int i = 0; i < count; i++) {
+//            if(position == i){
+//                //设置当前位置点亮
+//                mAdapter.highlightIndicator(mIndicatorGroup.getItemAt(mCurrentPosition));
+//            }else{
+//                mAdapter.restoreIndicator(mIndicatorGroup.getItemAt(i));
+//            }
+//        }
+    }
+
+    @Override
+    public void onPageScrollStateChanged(int state) {
+//        Log.e("TAG","state-->"+state);
+        if(state == 1){
+            mIsExecuteScroll = true;
+        }
+        if(state == 0){
+            mIsExecuteScroll = false;
+        }
+    }
+
 
     private void scrollCurrentIndicator(int position, float positionOffset) {
         //当前移动的距离
@@ -190,7 +192,7 @@ public class TrackTextIndicator extends HorizontalScrollView{
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         super.onLayout(changed, l, t, r, b);
 
-        if(changed){
+        if(changed && mItemWidth == 0){
             mItemWidth = getItemWidth();
             for (int i = 0; i < mAdapter.getCount(); i++) {
                 View view = mIndicatorGroup.getItemAt(i);
@@ -233,4 +235,6 @@ public class TrackTextIndicator extends HorizontalScrollView{
         }
         return itemWidth;
     }
+
+
 }

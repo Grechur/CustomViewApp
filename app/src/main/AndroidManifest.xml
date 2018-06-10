@@ -19,7 +19,8 @@
         <activity android:name=".LoadingActivity" />
         <activity android:name=".LoveActivity" />
         <activity android:name=".BannerActivity" />
-        <activity android:name=".IndicatorActivity"></activity>
+        <activity android:name=".IndicatorActivity" />
+        <activity android:name=".RecyclerviewActivity"></activity>
     </application>
 
 </manifest>

@@ -29,4 +29,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="跳转文字变色"/>
+
+    <Button
+        android:id="@+id/btn_recyclerview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="跳转列表"/>
 </LinearLayout>
