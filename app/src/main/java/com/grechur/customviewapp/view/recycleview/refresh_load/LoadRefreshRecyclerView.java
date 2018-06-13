@@ -6,23 +6,13 @@ import android.content.Context;
 import android.support.annotation.Nullable;
 import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
-/**
- * Created by zhouzhu on 2018/6/10.
- */
+import com.grechur.customviewapp.view.recycleview.refresh_load.LoadViewCreator;
+import com.grechur.customviewapp.view.recycleview.refresh_load.RefreshRecyclerView;
 
-public class LoadRefreshRecyclerView extends RefreshRecyclerView{
-    // 默认状态
-    public int LOAD_STATUS_NORMAL = 0x0011;
-    // 上拉加载更多状态
-    public static int LOAD_STATUS_PULL_DOWN_REFRESH = 0x0022;
-    // 松开加载更多状态
-    public static int LOAD_STATUS_LOOSEN_LOADING = 0x0033;
-    // 正在加载更多状态
-    public int LOAD_STATUS_LOADING = 0x0044;
+public class LoadRefreshRecyclerView extends RefreshRecyclerView {
     // 上拉加载更多的辅助类
     private LoadViewCreator mLoadCreator;
     // 上拉加载更多头部的高度
@@ -35,7 +25,14 @@ public class LoadRefreshRecyclerView extends RefreshRecyclerView{
     private boolean mCurrentDrag = false;
     // 当前的状态
     private int mCurrentLoadStatus;
-
+    // 默认状态
+    public static int LOAD_STATUS_NORMAL = 0x0011;
+    // 上拉加载更多状态
+    public static int LOAD_STATUS_PULL_DOWN_REFRESH = 0x0022;
+    // 松开加载更多状态
+    public static int LOAD_STATUS_LOOSEN_LOADING = 0x0033;
+    // 正在加载更多状态
+    public int LOAD_STATUS_LOADING = 0x0044;
 
     public LoadRefreshRecyclerView(Context context) {
         super(context);
@@ -60,21 +57,6 @@ public class LoadRefreshRecyclerView extends RefreshRecyclerView{
     public void setAdapter(Adapter adapter) {
         super.setAdapter(adapter);
         addRefreshView();
-    }
-
-    /**
-     * 添加底部加载更多View
-     */
-    private void addRefreshView() {
-        Adapter adapter = getAdapter();
-        if (adapter != null && mLoadCreator != null) {
-            // 添加底部加载更多View
-            View loadView = mLoadCreator.getLoadView(getContext(), this);
-            if (loadView != null) {
-                addFooterView(loadView);
-                this.mLoadView = loadView;
-            }
-        }
     }
 
     @Override
@@ -109,12 +91,14 @@ public class LoadRefreshRecyclerView extends RefreshRecyclerView{
             if (mListener != null) {
                 mListener.onLoad();
             }
+        }else{
+            mLoadCreator.failLoading();
         }
 
         int distance = currentBottomMargin - finalBottomMargin;
 
         // 回弹到指定位置
-        ValueAnimator animator = ObjectAnimator.ofFloat(currentBottomMargin, finalBottomMargin).setDuration(distance);
+        ValueAnimator animator = ObjectAnimator.ofFloat(currentBottomMargin, finalBottomMargin).setDuration(Math.abs(distance));
         animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
@@ -126,32 +110,6 @@ public class LoadRefreshRecyclerView extends RefreshRecyclerView{
         mCurrentDrag = false;
     }
 
-    /**
-     * 设置加载View的marginBottom
-     */
-    public void setLoadViewMarginBottom(int marginBottom) {
-        MarginLayoutParams params = (MarginLayoutParams) mLoadView.getLayoutParams();
-        if (marginBottom < 0) {
-            marginBottom = 0;
-        }
-        params.bottomMargin = marginBottom;
-        mLoadView.setLayoutParams(params);
-    }
-
-    protected void onLayout(boolean changed, int l, int t, int r, int b) {
-        super.onLayout(changed, l, t, r, b);
-        if (changed) {
-            if (mLoadView != null && mLoadViewHeight <= 0) {
-                // 获取头部刷新View的高度
-                mLoadViewHeight = mLoadView.getMeasuredHeight();
-                Log.e("TAG","mLoadViewHeight ="+mLoadViewHeight);
-                if (mLoadViewHeight > 0) {
-                    // 隐藏头部刷新的View  marginTop  多留出1px防止无法判断是不是滚动到头部问题
-                    setLoadViewMarginBottom(mLoadViewHeight - 1);
-                }
-            }
-        }
-    }
 
     @Override
     public boolean onTouchEvent(MotionEvent e) {
@@ -187,15 +145,6 @@ public class LoadRefreshRecyclerView extends RefreshRecyclerView{
     }
 
     /**
-     * @return Whether it is possible for the child view of this layout to
-     * scroll up. Override this if the child view is a custom view.
-     * 判断是不是滚动到了最顶部，这个是从SwipeRefreshLayout里面copy过来的源代码
-     */
-    public boolean canScrollDown() {
-        return ViewCompat.canScrollVertically(this, 1);
-    }
-
-    /**
      * 更新加载的状态
      */
     private void updateLoadStatus(int distanceY) {
@@ -212,6 +161,42 @@ public class LoadRefreshRecyclerView extends RefreshRecyclerView{
         }
     }
 
+    /**
+     * 添加底部加载更多View
+     */
+    private void addRefreshView() {
+        Adapter adapter = getAdapter();
+        if (adapter != null && mLoadCreator != null) {
+            // 添加底部加载更多View
+            View loadView = mLoadCreator.getLoadView(getContext(), this);
+            if (loadView != null) {
+                addFooterView(loadView);
+                this.mLoadView = loadView;
+            }
+        }
+    }
+
+    /**
+     * 设置加载View的marginBottom
+     */
+    public void setLoadViewMarginBottom(int marginBottom) {
+        MarginLayoutParams params = (MarginLayoutParams) mLoadView.getLayoutParams();
+        if (marginBottom < 0) {
+            marginBottom = 0;
+        }
+        params.bottomMargin = marginBottom;
+        mLoadView.setLayoutParams(params);
+    }
+
+
+    /**
+     * @return Whether it is possible for the child view of this layout to
+     * scroll up. Override this if the child view is a custom view.
+     * 判断是不是滚动到了最顶部，这个是从SwipeRefreshLayout里面copy过来的源代码
+     */
+    public boolean canScrollDown() {
+        return ViewCompat.canScrollVertically(this, 1);
+    }
 
     /**
      * 停止加载更多
@@ -234,6 +219,4 @@ public class LoadRefreshRecyclerView extends RefreshRecyclerView{
     public interface OnLoadMoreListener {
         void onLoad();
     }
-
-    
 }

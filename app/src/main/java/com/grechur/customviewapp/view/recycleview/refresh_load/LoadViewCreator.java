@@ -26,6 +26,8 @@ public abstract class LoadViewCreator {
      */
     public abstract void onPull(int currentDragHeight, int loadViewHeight, int currentLoadStatus);
 
+    public abstract void failLoading();
+
     /**
      * 正在加载中
      */

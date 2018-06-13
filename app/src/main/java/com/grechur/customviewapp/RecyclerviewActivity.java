@@ -8,13 +8,14 @@ import com.grechur.customviewapp.view.recycleview.WrapRecyclerAdapter;
 import com.grechur.customviewapp.view.recycleview.defaultrefresh.DefaultLoadCreator;
 import com.grechur.customviewapp.view.recycleview.defaultrefresh.DefaultRefreshCreator;
 import com.grechur.customviewapp.view.recycleview.refresh_load.LoadRefreshRecyclerView;
+import com.grechur.customviewapp.view.recycleview.refresh_load.LoadRefreshRecyclerViewCopy;
 import com.grechur.customviewapp.view.recycleview.refresh_load.RefreshRecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class RecyclerviewActivity extends AppCompatActivity {
-    private LoadRefreshRecyclerView load_refresh_view;
+    private LoadRefreshRecyclerViewCopy load_refresh_view;
     private List mData;
     private MyAdapter mAdapter;
     private DefaultRefreshCreator mDefaultRefreshCreator;
@@ -57,7 +58,7 @@ public class RecyclerviewActivity extends AppCompatActivity {
         });
 
         load_refresh_view.addLoadViewCreator(new DefaultLoadCreator());
-        load_refresh_view.setOnLoadMoreListener(new LoadRefreshRecyclerView.OnLoadMoreListener() {
+        load_refresh_view.setOnLoadMoreListener(new LoadRefreshRecyclerViewCopy.OnLoadMoreListener() {
             @Override
             public void onLoad() {
                 new Thread(new Runnable() {

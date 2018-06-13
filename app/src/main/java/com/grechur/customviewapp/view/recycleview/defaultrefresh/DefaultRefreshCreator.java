@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
+import android.view.animation.LinearInterpolator;
 import android.view.animation.RotateAnimation;
 
 import com.grechur.customviewapp.R;
@@ -22,6 +23,7 @@ public class DefaultRefreshCreator extends RefreshViewCreator {
     public View getRefreshView(Context context, ViewGroup parent) {
         View refreshView = LayoutInflater.from(context).inflate(R.layout.layout_refresh_header_view, parent, false);
         mRefreshIv = refreshView.findViewById(R.id.refresh_iv);
+        mRefreshIv.setVisibility(View.VISIBLE);
         return refreshView;
     }
 
@@ -38,6 +40,7 @@ public class DefaultRefreshCreator extends RefreshViewCreator {
         RotateAnimation animation = new RotateAnimation(0, 720,
                 Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
         animation.setRepeatCount(-1);
+        animation.setInterpolator(new LinearInterpolator());
         animation.setDuration(1000);
         mRefreshIv.startAnimation(animation);
     }

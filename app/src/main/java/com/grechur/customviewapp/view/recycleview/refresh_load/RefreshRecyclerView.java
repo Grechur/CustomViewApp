@@ -170,6 +170,7 @@ public class RefreshRecyclerView extends WrapRecyclerView{
         switch (e.getAction()) {
             case MotionEvent.ACTION_MOVE:
                 // 如果是在最顶部才处理，否则不需要处理
+                Log.e("TAG","canScrollUp"+canScrollUp());
                 if (canScrollUp() || mCurrentRefreshStatus == REFRESH_STATUS_REFRESHING) {
                     // 如果没有到达最顶端，也就是说还可以向上滚动就什么都不处理
                     return super.onTouchEvent(e);
@@ -182,8 +183,6 @@ public class RefreshRecyclerView extends WrapRecyclerView{
 
                 // 获取手指触摸拖拽的距离
                 int distanceY = (int) ((e.getRawY() - mFingerDownY) * mDragIndex);
-                Log.e("TAG","mFingerDownY"+mFingerDownY);
-                Log.e("TAG","e.getRawY()"+e.getRawY());
                 // 如果是已经到达头部，并且不断的向下拉，那么不断的改变refreshView的marginTop的值
                 if (distanceY > 0) {
                     int marginTop = distanceY - mRefreshViewHeight;
