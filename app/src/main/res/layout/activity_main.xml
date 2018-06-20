@@ -12,6 +12,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="跳转loadview"/>
+    <Button
+        android:id="@+id/btn_circle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="跳转circle"/>
 
     <Button
         android:id="@+id/btn_love"

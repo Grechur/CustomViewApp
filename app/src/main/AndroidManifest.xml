@@ -20,7 +20,8 @@
         <activity android:name=".LoveActivity" />
         <activity android:name=".BannerActivity" />
         <activity android:name=".IndicatorActivity" />
-        <activity android:name=".RecyclerviewActivity"></activity>
+        <activity android:name=".RecyclerviewActivity" />
+        <activity android:name=".CircleLoadActivity"></activity>
     </application>
 
 </manifest>

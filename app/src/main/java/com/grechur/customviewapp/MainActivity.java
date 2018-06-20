@@ -18,6 +18,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         findViewById(R.id.btn_banner).setOnClickListener(this);
         findViewById(R.id.btn_track).setOnClickListener(this);
         findViewById(R.id.btn_recyclerview).setOnClickListener(this);
+        findViewById(R.id.btn_circle).setOnClickListener(this);
     }
 
     @Override
@@ -25,6 +26,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch (v.getId()){
             case R.id.btn_load:
                 startActivity(new Intent(this,LoadingActivity.class));
+                break;
+            case R.id.btn_circle:
+                startActivity(new Intent(this,CircleLoadActivity.class));
                 break;
             case R.id.btn_love:
                 startActivity(new Intent(this,LoveActivity.class));

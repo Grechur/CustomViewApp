@@ -20,4 +20,10 @@
     <declare-styleable name="TrackTextIndicator">
         <attr name="visibleIndicatorNum" format="integer"/>
     </declare-styleable>
+
+    <declare-styleable name="CircleLoadView">
+        <attr name="leftColor" format="color"/>
+        <attr name="centerColor" format="color"/>
+        <attr name="rightColor" format="color"/>
+    </declare-styleable>
 </resources>
