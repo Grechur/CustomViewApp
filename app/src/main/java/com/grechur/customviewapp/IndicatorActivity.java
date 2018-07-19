@@ -1,8 +1,5 @@
 package com.grechur.customviewapp;
 
-import android.animation.ObjectAnimator;
-import android.animation.ValueAnimator;
-import android.graphics.Color;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -11,13 +8,9 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.grechur.customviewapp.view.TextFragment;
 import com.grechur.customviewapp.view.tabIndication.ColorTrackTextView;
 import com.grechur.customviewapp.view.tabIndication.TrackAdapter;
 import com.grechur.customviewapp.view.tabIndication.TrackTextIndicator;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class IndicatorActivity extends AppCompatActivity {
     TrackTextIndicator track_indicator;

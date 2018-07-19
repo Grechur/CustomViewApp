@@ -19,6 +19,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         findViewById(R.id.btn_track).setOnClickListener(this);
         findViewById(R.id.btn_recyclerview).setOnClickListener(this);
         findViewById(R.id.btn_circle).setOnClickListener(this);
+        findViewById(R.id.btn_web_load).setOnClickListener(this);
     }
 
     @Override
@@ -29,6 +30,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.btn_circle:
                 startActivity(new Intent(this,CircleLoadActivity.class));
+                break;
+            case R.id.btn_web_load:
+                startActivity(new Intent(this,WebLoadActivity.class));
                 break;
             case R.id.btn_love:
                 startActivity(new Intent(this,LoveActivity.class));

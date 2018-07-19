@@ -4,7 +4,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 
-import com.grechur.customviewapp.view.LoveLayout;
+import com.grechur.customviewapp.view.zan.LoveLayout;
 
 public class LoveActivity extends AppCompatActivity {
     LoveLayout ll_love;

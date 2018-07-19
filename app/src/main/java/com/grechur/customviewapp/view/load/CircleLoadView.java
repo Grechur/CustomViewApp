@@ -37,7 +37,7 @@ public class CircleLoadView extends View{
     private int mMaxDistance;
     //动画
     private ValueAnimator mAnimator;
-    private ValueAnimator mAnimator1;
+    private ValueAnimator mExpendAnimal;
 
     public CircleLoadView(Context context) {
         this(context,null);
@@ -86,37 +86,51 @@ public class CircleLoadView extends View{
 
     @Override
     protected void onDraw(Canvas canvas) {
-
+        //画左边的圆
         canvas.drawCircle(getWidth()/2-mDistance,getHeight()/2,mRadius,mLeftPaint);
+        //画中间的圆
         canvas.drawCircle(getWidth()/2,getHeight()/2,mRadius,mCenterPaint);
+        //画右边的圆
         canvas.drawCircle(getWidth()/2+mDistance,getHeight()/2,mRadius,mRightPaint);
 
 
     }
 
+    /**
+     * 离开window时要关闭动画
+     */
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         if(mAnimator.isStarted()){
             mAnimator.cancel();
         }
-        if(mAnimator1.isStarted()){
-            mAnimator1.cancel();
+        if(mExpendAnimal.isStarted()){
+            mExpendAnimal.cancel();
         }
     }
 
-
+    /**
+     * 绑定页面时加载动画
+     */
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         initAnimal();
 
     }
+
+    /**
+     * 设置当前的距离
+     * @param current
+     */
     public void setDistance(int current){
         this.mDistance = current;
         invalidate();
     }
-
+    /**
+     * 收缩动画
+     */
     private void initAnimal(){
         mAnimator = ObjectAnimator.ofFloat(mMaxDistance,0);
         mAnimator.setDuration(350);
@@ -141,10 +155,10 @@ public class CircleLoadView extends View{
                 mLeftPaint.setColor(mLeftColor);
                 mCenterPaint.setColor(mCenterColor);
                 mRightPaint.setColor(mRightColor);
-                if(mAnimator1!=null){
-                    mAnimator1.start();
+                if(mExpendAnimal!=null){
+                    mExpendAnimal.start();
                 }else{
-                    initAnimal1();
+                    initExpendAnimal();
                 }
 
             }
@@ -152,18 +166,21 @@ public class CircleLoadView extends View{
         mAnimator.start();
     }
 
-    private void initAnimal1(){
-        mAnimator1 = ObjectAnimator.ofFloat(0,mMaxDistance);
-        mAnimator1.setDuration(350);
-        mAnimator1.setInterpolator(new LinearInterpolator());
-        mAnimator1.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+    /**
+     * 扩散动画
+     */
+    private void initExpendAnimal(){
+        mExpendAnimal = ObjectAnimator.ofFloat(0,mMaxDistance);
+        mExpendAnimal.setDuration(350);
+        mExpendAnimal.setInterpolator(new LinearInterpolator());
+        mExpendAnimal.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
                 float value = (float) animation.getAnimatedValue();
                 setDistance((int) value);
             }
         });
-        mAnimator1.addListener(new AnimatorListenerAdapter() {
+        mExpendAnimal.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
                 super.onAnimationEnd(animation);
@@ -175,7 +192,7 @@ public class CircleLoadView extends View{
 
             }
         });
-        mAnimator1.start();
+        mExpendAnimal.start();
     }
 
 }

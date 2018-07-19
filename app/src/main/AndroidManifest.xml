@@ -21,7 +21,8 @@
         <activity android:name=".BannerActivity" />
         <activity android:name=".IndicatorActivity" />
         <activity android:name=".RecyclerviewActivity" />
-        <activity android:name=".CircleLoadActivity"></activity>
+        <activity android:name=".CircleLoadActivity" />
+        <activity android:name=".WebLoadActivity"></activity>
     </application>
 
 </manifest>

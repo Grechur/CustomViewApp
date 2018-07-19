@@ -26,4 +26,8 @@
         <attr name="centerColor" format="color"/>
         <attr name="rightColor" format="color"/>
     </declare-styleable>
+
+    <declare-styleable name="WebLoadView">
+        <attr name="strokeColor" format="color"/>
+    </declare-styleable>
 </resources>
